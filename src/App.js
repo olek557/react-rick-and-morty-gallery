@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
+import getData from './api'
 import './App.css';
+
+console.log('getData', getData);
 
 class App extends Component {
   render() {

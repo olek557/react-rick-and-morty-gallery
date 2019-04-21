@@ -6,6 +6,7 @@ body {
   display: flex;
   max-width: 1200px;
   margin: 0 auto;
+  flex-wrap: wrap;
 }
 
 .card {
@@ -13,6 +14,8 @@ body {
   border-radius: 5px;
   border: 1px solid #999; 
   overflow: hidden;
+  margin-right: 20px;
+  margin-bottom: 20px;
 }
 
 .card__image {

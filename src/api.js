@@ -1,16 +1,11 @@
 const url = "https://rickandmortyapi.com/api/character/";
 
 
-let getData = fetch(url).then(
-  (resp) => {
-    if (resp.ok) {
-      return resp.json();
-    }
-  }
-).then(
-  (data) => {
-    return data.results;
-  }
-);
+let getData = async () => {
+  const response = await fetch(url);
+  const data = await response.json();
+  return data;
+}
+
 
 export default getData;

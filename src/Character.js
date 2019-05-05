@@ -2,7 +2,7 @@ import React from "react";
 
 const Character = (props) => {
   return (
-    <div className="card" key={props.character.id} >
+    <div className="card" >
       <div className="card__image">
         <img
           src={props.character.image}

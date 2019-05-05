@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-// import getData from "./api";
+import getData from "./api";
 import "./App.css";
 import { Filters } from "./Filters";
 import Character from "./Character";
@@ -10,81 +10,90 @@ class App extends Component {
     listToRender: [],
     filteringOptions: {},
   }
+
   async componentDidMount() {
-    const response = await fetch('https://rickandmortyapi.com/api/character/');
-    const data = await response.json();
+    let data = await getData();
     this.setState({
       originalList: data.results,
       listToRender: data.results,
     });
   }
 
-  // shouldComponentUpdate(_nextProps, nextState) {
-  //   if(this.state.filteredList === nextState.filteredList) {
-  //     return false;
-  //   }
-  //   return true;
-  // }
-
-  searchInList = (option, value, isFulMatch) => {
-    console.log(option, value, isFulMatch)
-    const searchQuery = this.state.filteringOptions[option];
-    const { listToRender } = this.state;
-    const filtredList = listToRender.filter((character) => {
-      return isFulMatch ? character[option].toLowerCase() === value.toLowerCase() : character[option].toLowerCase().includes(searchQuery);
+  searchInList = (list, option, value) => {
+    const result = list.filter((listItem) => {
+      return listItem[option].toLowerCase().includes(value.toLowerCase());
     });
-    this.setState({ listToRender: filtredList });
+    return result;
   }
 
-  sorting = (event) => {
-    const { characterList } = this.state;
+  sortingList = (event) => {
+    event.preventDefault();
+    const { listToRender } = this.state;
     const typeOfSorting = event.target.name;
-    const sortedList = characterList.sort((i, j) => {
+    const sortedList = listToRender.sort((i, j) => {
       if (typeOfSorting === 'sort-name-acs') {
         return i.name > j.name ? 1 : -1;
       } else if (typeOfSorting === 'sort-name-desc') {
         return i.name > j.name ? -1 : 1;
       }
     });
-    this.setState({ characterList: sortedList });
+    this.setState({ listToRender: sortedList });
   }
 
-  // filter = (event) => {
-  //   const option = event.target.name;
-  //   const value = event.target.value;
-  //   const { originalCharacterList } = this.state;
-  //   if (value === 'all') {
-  //     this.setState({ characterList: originalCharacterList });
-  //   }
-  //   else {
-  //     const filteredList = originalCharacterList.filter((character) => {
-  //       return character[option].toLowerCase() === value;
-  //     });
-  //     this.setState({ characterList: filteredList });
-  //   }
-  // }
+  filterlist = (list, option, value) => {
+    let result;
+    if (value === 'all') {
+      result = list;
+    }
+    else if (option === 'location') {
+      result = list.filter((listItem) => {
+        return listItem.location.name.toLowerCase() == value.toLowerCase();
+      });
+    }
+    else {
+      result = list.filter((listItem) => {
+        return listItem[option].toLowerCase() === value;
+      });
+    }
+    return result;
+  }
 
-  performFilter = (event) => {
+  generateFilteredList = (newFilteringOptions) => {
+    let listToRender = this.state.originalList;
+    const { nameSearch, genderFilter, speciesFilter, locationFilter } = newFilteringOptions;
+    if (nameSearch) {
+      listToRender = this.searchInList(listToRender, 'name', nameSearch);
+    }
+    if (genderFilter) {
+      listToRender = this.filterlist(listToRender, 'gender', genderFilter);
+    }
+    if (speciesFilter) {
+      listToRender = this.filterlist(listToRender, 'species', speciesFilter);
+    }
+    if (locationFilter) {
+      listToRender = this.filterlist(listToRender, 'location', locationFilter);
+    }
+    return listToRender;
+  }
+
+
+  performFiltering = (event) => {
     const input = event.target;
-    // const filteringOptions = this.state;
-    let filteringOptions = Object.assign({}, this.state.filteringOptions);
-    filteringOptions[input.name] = input.value;
-    this.setState({filteringOptions: filteringOptions});
-    Object.keys(filteringOptions).forEach(option => {
-      this.searchInList(option, filteringOptions[option], false);
-    });
+    const newFilteringOptions = Object.assign({}, this.state.filteringOptions);
+    newFilteringOptions[input.name] = input.value;
+    const newListToRender = this.generateFilteredList(newFilteringOptions);
+    this.setState({ listToRender: newListToRender, filteringOptions: newFilteringOptions });
   }
 
   render() {
-    const {listToRender} = this.state;
-    // console.log(this.state.listToRender.length, this.state.listToRender, this.state.originalList);
+    const { listToRender } = this.state;
     return (
       <>
-        <Filters handleFilter={this.performFilter}></Filters>
+        <Filters handleFilter={this.performFiltering} handleSorting={this.sortingList}></Filters>
         <div className="card-wrapper">
           {
             listToRender.map((character) => {
-              return <Character character={character} />
+              return <Character key={character.id} character={character} />
             })
           }
         </div>

@@ -4,11 +4,11 @@ import './Filters.css';
 export class Filters extends Component {
   render() {
     return (
-      <div className="filters">
+      <div className="filters-wrapper">
         <form onChange={(event) => { this.props.handleFilter(event) }}>
-          <div className="input-group">
+          <div className="filters">
             <input name="nameSearch" type="text" placeholder="Search by Name" className="input-field" />
-            <div>
+            <div className="input-group">
               Gender
               <select name="genderFilter">
                 <option value="all">All</option>
@@ -17,7 +17,7 @@ export class Filters extends Component {
                 <option value="unknown">Unknown</option>
               </select>
             </div>
-            <div>
+            <div className="input-group">
               Species
               <select name="speciesFilter">
                 <option value="all">All</option>
@@ -26,7 +26,7 @@ export class Filters extends Component {
                 <option value="unknown">Unknown</option>
               </select>
             </div>
-            <div>
+            <div className="input-group">
               Location
               <select name="locationFilter">
                 <option value="all">All</option>
@@ -37,11 +37,11 @@ export class Filters extends Component {
                 <option value="unknown">unknown</option>
               </select>
             </div>
+            <div className="sorting">
+              <button onClick={this.props.handleSorting} name="sort-name-acs">Sort by Name ASC</button>
+              <button onClick={this.props.handleSorting} name="sort-name-desc">Sort by Name DESC</button>
+            </div>
           </div>
-          <fieldset>
-            <button onClick={this.props.handleSorting} name="sort-name-acs">Sort by Name ASC</button>
-            <button onClick={this.props.handleSorting} name="sort-name-desc">Sort by Name DESC</button>
-          </fieldset>
         </form>
       </div>
     )

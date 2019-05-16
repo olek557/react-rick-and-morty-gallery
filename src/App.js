@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import getData from "./api";
 import "./App.css";
-import { Filters } from "./Filters";
+import Filters from "./Filters";
 import Character from "./Character";
 
 class App extends Component {
@@ -31,26 +31,22 @@ class App extends Component {
     const { listToRender } = this.state;
     const typeOfSorting = event.target.name;
     const sortedList = listToRender.sort((i, j) => {
-      if (typeOfSorting === "sort-name-acs") {
-        return i.name > j.name ? 1 : -1;
-      } else if (typeOfSorting === "sort-name-desc") {
-        return i.name > j.name ? -1 : 1;
-      }
+      return typeOfSorting === "sort-name-acs"
+        ? i.name.localeCompare(j.name)
+        : j.name.localeCompare(i.name);
     });
     this.setState({ listToRender: sortedList });
   };
 
-  filterlist = (list, option, value) => {
+  filterList = (list, option, value) => {
     let result;
     if (value === "all") {
       result = list;
-    } else if (option === "location") {
-      result = list.filter(listItem => {
-        return listItem.location.name.toLowerCase() == value.toLowerCase();
-      });
     } else {
       result = list.filter(listItem => {
-        return listItem[option].toLowerCase() === value;
+        const filteringOption =
+          option === "location" ? listItem[option].name : listItem[option];
+        return filteringOption.toLowerCase() === value.toLowerCase();
       });
     }
     return result;
@@ -68,21 +64,21 @@ class App extends Component {
       listToRender = this.searchInList(listToRender, "name", nameSearch);
     }
     if (genderFilter) {
-      listToRender = this.filterlist(listToRender, "gender", genderFilter);
+      listToRender = this.filterList(listToRender, "gender", genderFilter);
     }
     if (speciesFilter) {
-      listToRender = this.filterlist(listToRender, "species", speciesFilter);
+      listToRender = this.filterList(listToRender, "species", speciesFilter);
     }
     if (locationFilter) {
-      listToRender = this.filterlist(listToRender, "location", locationFilter);
+      listToRender = this.filterList(listToRender, "location", locationFilter);
     }
     return listToRender;
   };
 
   performFiltering = event => {
-    const input = event.target;
+    const { target } = event;
     const newFilteringOptions = Object.assign({}, this.state.filteringOptions);
-    newFilteringOptions[input.name] = input.value;
+    newFilteringOptions[target.name] = target.value;
     const newListToRender = this.generateFilteredList(newFilteringOptions);
     this.setState({
       listToRender: newListToRender,

@@ -11,14 +11,14 @@ const Filters = props => {
       >
         <div className="filters">
           <input
-            name="nameSearch"
+            name="name"
             type="text"
             placeholder="Search by Name"
             className="input-field"
           />
           <div className="input-group">
             Gender
-            <select name="genderFilter">
+            <select name="gender">
               <option value="all">All</option>
               <option value="male">Male</option>
               <option value="female">Female</option>
@@ -27,7 +27,7 @@ const Filters = props => {
           </div>
           <div className="input-group">
             Species
-            <select name="speciesFilter">
+            <select name="species">
               <option value="all">All</option>
               <option value="human">Human</option>
               <option value="alien">Alien</option>
@@ -36,7 +36,7 @@ const Filters = props => {
           </div>
           <div className="input-group">
             Location
-            <select name="locationFilter">
+            <select name="location">
               <option value="all">All</option>
               <option value="Earth (Replacement Dimension)">
                 Earth (Replacement Dimension)

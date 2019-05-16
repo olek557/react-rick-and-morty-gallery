@@ -20,6 +20,7 @@ class App extends Component {
   }
 
   searchInList = (list, option, value) => {
+    console.log(list, option, value);
     const result = list.filter(listItem => {
       return listItem[option].toLowerCase().includes(value.toLowerCase());
     });
@@ -52,37 +53,33 @@ class App extends Component {
     return result;
   };
 
-  generateFilteredList = newFilteringOptions => {
-    let listToRender = this.state.originalList;
-    const {
-      nameSearch,
-      genderFilter,
-      speciesFilter,
-      locationFilter
-    } = newFilteringOptions;
-    if (nameSearch) {
-      listToRender = this.searchInList(listToRender, "name", nameSearch);
-    }
-    if (genderFilter) {
-      listToRender = this.filterList(listToRender, "gender", genderFilter);
-    }
-    if (speciesFilter) {
-      listToRender = this.filterList(listToRender, "species", speciesFilter);
-    }
-    if (locationFilter) {
-      listToRender = this.filterList(listToRender, "location", locationFilter);
-    }
-    return listToRender;
+  generateFilteredList = filterOptions => {
+    let { originalList } = this.state;
+    Object.keys(filterOptions).forEach(filterOption => {
+      if (filterOption === "name") {
+        originalList = this.searchInList(
+          originalList,
+          filterOption,
+          filterOptions[filterOption]
+        );
+      } else {
+        originalList = this.filterList(
+          originalList,
+          filterOption,
+          filterOptions[filterOption]
+        );
+      }
+    });
+    return originalList;
   };
 
   performFiltering = event => {
     const { target } = event;
-    const newFilteringOptions = Object.assign({}, this.state.filteringOptions);
-    newFilteringOptions[target.name] = target.value;
-    const newListToRender = this.generateFilteredList(newFilteringOptions);
+    const { filteringOptions } = this.state;
+    filteringOptions[target.name] = target.value;
     this.setState({
-      listToRender: newListToRender,
-      filteringOptions: newFilteringOptions
+      listToRender: this.generateFilteredList(filteringOptions),
+      filteringOptions
     });
   };
 
